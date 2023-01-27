@@ -25,7 +25,6 @@ spec:
               value: "kubenews"
 
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
@@ -38,12 +37,12 @@ spec:
   type: ClusterIP
 
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: web
 spec:
+  replicas: 3
   selector:
     matchLabels:
       app: web
@@ -54,7 +53,7 @@ spec:
     spec:
       containers:
         - name: web
-          image: hidemitsu/kube-news:latest
+          image: hidemitsu/kube-news:{{TAG}}
           ports:
             - containerPort: 8080
           env:
@@ -68,7 +67,6 @@ spec:
               value: "postgres"
 
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
