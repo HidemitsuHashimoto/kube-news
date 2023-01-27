@@ -5,7 +5,7 @@ pipeline {
     stage ('Build Docker Image') {
       steps {
         script {
-          dockerapp = docker.build("hidemitsu/kube-news:${env.BUILD_ID}", "-f ./src/Dockerfile ./src")
+          dockerapp = docker.build("hidemitsu/kube-news:v${env.BUILD_ID}", "-f ./src/Dockerfile ./src")
         }
       }
     }
@@ -17,6 +17,14 @@ pipeline {
             dockerapp.push('latest')
             dockerapp.push("${env.BUILD_ID}")
           }
+        }
+      }
+    }
+
+    stage ('Deploy Kubernetes') {
+      steps {
+        withKubeconfig([credentialsId: 'kubeconfig']) {
+          sh 'kubectl apply -f ./k8s/deployment.yaml'
         }
       }
     }
